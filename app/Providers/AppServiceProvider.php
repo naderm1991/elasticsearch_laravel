@@ -5,8 +5,8 @@ namespace App\Providers;
 use App\Repositories\Articles\ElasticsearchRepository;
 use App\Repositories\Articles\EloquentSearchRepository;
 use App\Repositories\SearchRepositoryInterface;
-use Elastic\Elasticsearch\Client;
-use Elastic\Elasticsearch\ClientBuilder;
+use Elasticsearch\Client;
+use Elasticsearch\ClientBuilder;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -25,7 +25,6 @@ class AppServiceProvider extends ServiceProvider
             if (! config('services.search.enabled')) {
                 return new EloquentSearchRepository();
             }
-
             return new ElasticsearchRepository(
                 $app->make(Client::class)
             );

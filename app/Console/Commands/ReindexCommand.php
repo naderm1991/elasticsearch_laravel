@@ -3,12 +3,11 @@
 namespace App\Console\Commands;
 
 use App\Models\Article;
-use Elastic\Elasticsearch\Client;
-use Elastic\Elasticsearch\Exception\ClientResponseException;
-use Elastic\Elasticsearch\Exception\MissingParameterException;
-use Elastic\Elasticsearch\Exception\ServerResponseException;
+use Elasticsearch\Client;
+use Elasticsearch\Common\Exceptions\ClientErrorResponseException;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
+use Spatie\FlareClient\Http\Exceptions\MissingParameter;
 
 class ReindexCommand extends Command
 {
@@ -48,15 +47,15 @@ class ReindexCommand extends Command
 
         foreach (Article::cursor() as $article)
         {
-            //App\Models\Article::elasticsearchIndex()
             try {
                 $this->elasticsearch->index([
                     'index' => $article->getSearchIndex(),
-                    'type' => $article->getSearchType(),
                     'id' => $article->getKey(),
-                    'body' => $article->toSearchArray(),
+                    'body' => json_encode([
+                        'data' => $article->toArray()
+                    ]),
                 ]);
-            } catch (ClientResponseException|MissingParameterException|ServerResponseException $e) {
+            } catch (ClientErrorResponseException|MissingParameter $e) {
                 Log::debug( $e->getMessage());
             }
 

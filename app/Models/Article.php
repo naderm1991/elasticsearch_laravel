@@ -19,23 +19,25 @@ class Article extends Model
         'tags' => 'json',
     ];
 
-    public function toElasticsearchDocumentArray(): array
+    public function getSearchIndex(): string
     {
-        return [];
-    }
-
-    public function getSearchIndex()
-    {
-        return $this->id;
+        return "tags";
     }
 
     public function getSearchType(): string
     {
-        return "";
+        return "article";
     }
 
     public function toSearchArray(): array
     {
-        return $this->toElasticsearchDocumentArray();
+        return [];
+    }
+
+    public function toElasticsearchDocumentArray(): array
+    {
+        return [
+            'title','body','tags'
+        ];
     }
 }

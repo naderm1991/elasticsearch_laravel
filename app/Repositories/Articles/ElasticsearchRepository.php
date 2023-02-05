@@ -3,12 +3,11 @@
 namespace App\Repositories\Articles;
 
 use App\Models\Article;
-use Elastic\Elasticsearch\Client;
-use Elastic\Elasticsearch\Response\Elasticsearch;
-use Http\Promise\Promise;
+use App\Repositories\SearchRepositoryInterface;
+use Elasticsearch\Client;
 use Illuminate\Support\Arr;
 use Illuminate\Database\Eloquent\Collection;
-class ElasticsearchRepository implements ArticlesRepositoryInterface
+class ElasticsearchRepository implements SearchRepositoryInterface
 {
     private Client $elasticsearch;
 
@@ -24,7 +23,7 @@ class ElasticsearchRepository implements ArticlesRepositoryInterface
         return $this->buildCollection((array)$items);
     }
 
-    private function searchOnElasticsearch(string $query = ''): Elasticsearch|Promise
+    private function searchOnElasticsearch(string $query = '')
     {
         $model = new Article;
 

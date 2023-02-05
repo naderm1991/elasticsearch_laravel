@@ -3,7 +3,7 @@
 namespace App\Search;
 
 use App\Observers\Search\ElasticsearchObserver;
-use Elastic\Elasticsearch\Client;
+use Elasticsearch\Client;
 
 trait Searchable
 {
