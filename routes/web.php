@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Repositories\SearchRepositoryInterface;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -22,9 +23,17 @@ Route::get('/', function () {
 //    return view('dashboard');
 //})->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/dashboard', function () {
+//Route::get('/dashboard', function () {
+//    return view('dashboard', [
+//        'articles' => App\Models\Article::all(),
+//    ]);
+//})->middleware(['auth'])->name('dashboard');
+
+Route::get('/dashboard', function (SearchRepositoryInterface $searchRepository) {
     return view('dashboard', [
-        'articles' => App\Models\Article::all(),
+        'articles' => request()->has('q') && !empty(request()->q)
+            ? $searchRepository->search(request('q'))
+            : App\Models\Article::all(),
     ]);
 })->middleware(['auth'])->name('dashboard');
 
@@ -34,4 +43,4 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php'
+require __DIR__.'/auth.php';
