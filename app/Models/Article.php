@@ -21,7 +21,7 @@ class Article extends Model
 
     public function getSearchIndex(): string
     {
-        return "tags";
+        return "article";
     }
 
     public function getSearchType(): string
@@ -31,7 +31,7 @@ class Article extends Model
 
     public function toSearchArray(): array
     {
-        return [];
+        return $this->toElasticsearchDocumentArray();
     }
 
     public function toElasticsearchDocumentArray(): array

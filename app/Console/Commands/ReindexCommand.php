@@ -44,16 +44,13 @@ class ReindexCommand extends Command
     {
         $this->info('Indexing all articles. This might take a while...');
 
-
         foreach (Article::cursor() as $article)
         {
             try {
                 $this->elasticsearch->index([
                     'index' => $article->getSearchIndex(),
                     'id' => $article->getKey(),
-                    'body' => json_encode([
-                        'data' => $article->toArray()
-                    ]),
+                    'body' => $article->toArray(),
                 ]);
             } catch (ClientErrorResponseException|MissingParameter $e) {
                 Log::debug( $e->getMessage());

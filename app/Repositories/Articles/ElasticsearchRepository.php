@@ -16,20 +16,18 @@ class ElasticsearchRepository implements SearchRepositoryInterface
         $this->elasticsearch = $elasticsearch;
     }
 
-    public function search(string $query = ''): Collection
+    public function search(string $term = ''): Collection
     {
-        $items = $this->searchOnElasticsearch($query);
+        $items = $this->searchOnElasticsearch($term);
 
         return $this->buildCollection((array)$items);
     }
 
-    private function searchOnElasticsearch(string $query = '')
+    private function searchOnElasticsearch(string $query = ''): callable|array
     {
         $model = new Article;
-
-        $items = $this->elasticsearch->search([
+        return $this->elasticsearch->search([
             'index' => $model->getSearchIndex(),
-            'type' => $model->getSearchType(),
             'body' => [
                 'query' => [
                     'multi_match' => [
@@ -39,8 +37,6 @@ class ElasticsearchRepository implements SearchRepositoryInterface
                 ],
             ],
         ]);
-
-        return $items;
     }
 
     private function buildCollection(array $items): Collection
